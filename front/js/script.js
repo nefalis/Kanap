@@ -1,3 +1,7 @@
+// recupérer sur Api
+// mettre en forme
+// injecter
+
 
 const start = () => {
 
@@ -6,8 +10,8 @@ const start = () => {
         .then(res => res.json()) //récuper resultat au format json
         .then(data => { // quand se passe bien
 
-            let display = ''
-            for (let article of data) { //boucle
+            let display = '' //stock resultat dans display pour alleger le code
+            for (let article of data) { //boucle car tableau (8articles)
 
                 /* += concatenation à la volée 1 11 111 1111 ...*/
                 display += ` 
@@ -21,7 +25,7 @@ const start = () => {
     `
             }
             console.log(display)
-            document.querySelector('#items').insertAdjacentHTML('beforeend', display)
+            document.querySelector('#items').insertAdjacentHTML('beforeend', display) //beforeend permet depositionner a la fin
         })
         // insertadjacenthtml remplace innerhtml
 
@@ -30,3 +34,6 @@ const start = () => {
 }
 
 window.addEventListener('load', start) //attend que DOm fini pour lancer JS
+
+//$ permet d'interpreter sans $ c'est du texte
+// ` indique texte
