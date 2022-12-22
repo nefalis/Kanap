@@ -73,20 +73,6 @@ for (let color of product.colors) {
 //const title = document.querySelector("#title");
 //title.innerHTML = product.name;
 
-/*import Panier from "./class/panier.js";
-import ApiProducts from "./class/apiProduct.js";
-
-/*
-const displayProduct = async () => {
-  const id = new URLSearchParams(document.location.search).get("id"); // Récupération des paramètres envoyés dans l'URL , puis du produit associé à l'ID
-  const product = await ApiProducts.getProducts(
-    `http://localhost:3000/api/products/${id}`
-  );
-  if (Object.keys(product).length === 0) {
-    alert("l'identifiant du produit n'est pas correct");
-    window.location.replace("./index.html");
-  }*/
-
 
 /* marche pas
 etch('http://localhost:3000/api/products' + idProduct)
@@ -167,8 +153,6 @@ fetch('http://localhost:3000/api/products/' + idProduct)
   .catch(err => console.log(err)) //quand se passe mal*/
 
 
-
-
 /* marche pas
 .then(products)  { // quand se passe bien
    /* for (product of products) {
@@ -200,14 +184,3 @@ coup tu urilisera la reponse de ce fetch pour chercher les valeur (reponse.price
 */
 
 
-/* parti cart
-const regexName = /^[a-zA-ZàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ\s,'-]$/i;
-const regexAddress = /^[a-zA-Z0-9àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ\s,'-]$/i;
-const regexEmail = /^[0-9a-z._-]+@{1}[0-9a-z.-]{2,}[.]{1}[a-z]{2,5}$/i;
-Vaën — Aujourd’hui à 15:24
-[A-Za-zÀ-ÖØ-öø-ÿ]
-[a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]
-u00c0 = https://en.wikipedia.org/wiki/Latin-1_Supplement
-Latin-1 Supplement
-The Latin-1 Supplement (also called C1 Controls and Latin-1 Supplement) is the second Unicode block in the Unicode standard. It encodes the upper range of ISO 8859-1: 80 (U+0080) - FF (U+00FF). C1 Controls (0080–009F) are not graphic. This block ranges from U+0080 to U+00FF, contains 128 characters and includes the C1 controls, Latin-1 punctuati...
-*/
