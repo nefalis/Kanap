@@ -446,7 +446,7 @@ function getCart() {
 */  
 
 //test2 ---------------------
-/*// Récuperer le contenu du panier dans le localstorage
+// Récuperer le contenu du panier dans le localstorage
 const productStorage = JSON.parse(localStorage.getItem('product'));
 
 //gestion panier
@@ -687,3 +687,34 @@ document.getElementById('cart__items').insertAdjacentHTML('beforeend',
 getCart();
 
 //console.log(productStorage); */
+
+/* ////////////////////////////////////
+// Récupération des produits stockés dans le LocalStorage
+let products = JSON.parse(localStorage.getItem("products"));
+
+// Vérification de l'existence des produits dans le LocalStorage
+if (products !== null) {
+    // Boucle pour parcourir les produits
+    for (let i = 0; i < products.length; i++) {
+        // Récupération des informations du produit
+        let product = products[i];
+        console.log(product);
+        // Affichage du produit sur la page
+        let productName = document.createElement("p");
+        productName.innerHTML = product.name;
+        document.body.appendChild(productName);
+    }
+} else {
+    console.log("Aucun produit n'est stocké dans le LocalStorage");
+}*/
+
+
+/* ///////////////////////////
+fetch('https://example.com/api/data')
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });*/

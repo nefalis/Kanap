@@ -52,7 +52,7 @@ buttonProduct.addEventListener('click', (e) => {
     let quantityChoose = quantity.value;
 
     // ajout localstorage ou tableau vide
-    let cart = JSON.parse(localStorage.getItem("product")) || [];
+    let cart = JSON.parse(localStorage.getItem("panier")) || [];
 
     // si panier comporte un article
     let resultFind = cart.find(
@@ -77,7 +77,7 @@ buttonProduct.addEventListener('click', (e) => {
       cart.push(product);
     }
 
-    localStorage.setItem("product", JSON.stringify(cart));
+    localStorage.setItem("panier", JSON.stringify(cart));
 
   }
 
