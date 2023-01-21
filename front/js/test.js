@@ -1,157 +1,173 @@
+/*
+// Récuperer le contenu du panier dans le localstorage
+const productStorage = JSON.parse(localStorage.getItem('panier'));
 
 //gestion panier
 function getCart() {
 
-    // Récuperer le contenu du panier dans le localstorage
-    const productStorage = JSON.parse(localStorage.getItem('panier'));
-    
-      // Récupération du prix
-    fetch("http://localhost:3000/api/products/")
+  //gestion du panier vide 
+  if (productStorage == null || productStorage == 0) {
+    document.getElementById("cart__items").innerHTML += `Votre panier est vide`;
+
+    console.log("c'est videuuuuuhhhh");
+  }
+
+  // gestion panier plein
+  else {
+    document.getElementById("cart__items").innerHTML += `Votre panier`;
+
+    console.log('il y a un canap !!');
+  }
+
+  // Récupération fiche produit dans le panier
+  fetch("http://localhost:3000/api/products/")
     .then(res => res.json())
     .then(product => {
-    
-    const priceProduct = document.getElementById('price');
-    priceProduct.textContent = product.price;
-    
-    const totalPrice = document.getElementById('totalPrice');
-    totalPrice.textContent = product.totalPrice;
-    
-    console.log("pouet");
-    
-    })
-    //.catch(error => alert("Erreur : " + error));
-    
-    //gestion du panier vide 
-    if (productStorage == null || productStorage == 0 ) {
-      document.getElementById("cart__items").innerHTML += `Votre panier est vide`;
-    
-      console.log("c'est videuuuuuhhhh");
+
+      for (i = 0; i < productStorage.length; i++) {
+
+//console.log(productStorage[i].idProduct);
+ //console.log(product[0]._id);      
+
+const cartInfo = product.find(product => product._id === productStorage[i].idProduct)
+
+
+
+        document.getElementById('cart__items').insertAdjacentHTML('beforeend',
+          `<article class="cart__item" data-id="${productStorage[i].idProduct._id}" data-color="${productStorage[i].colorProduct}">
+                  <div class="cart__item__img">
+                    <img src="${cartInfo.imageUrl}" alt="${cartInfo.altTxt}">
+                  </div>
+                  <div class="cart__item__content">
+  
+                    <div class="cart__item__content__description">
+                      <h2>${cartInfo.name}</h2>
+                      <p>${productStorage[i].colorProduct}</p>
+                    <p>${cartInfo.price} € </p>
+                    </div>
+                    <div class="cart__item__content__settings">
+                      <div class="cart__item__content__settings__quantity">
+                        <p>Qté : </p>
+                        <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${productStorage[i].quantityProduct}">
+                      </div>
+                      <div class="cart__item__content__settings__delete">
+                        <p class="deleteItem">Supprimer</p>
+                      </div>
+                    </div>
+                  </div>
+                </article>`
+        )
+      }
     }
-    
-    // gestion panier plein
-    else {
-      document.getElementById("cart__items").innerHTML += `Votre panier`;
-    
-      console.log('il y a un canap !!');
-    
-    // fiche produit dans le panier 
-    for (i = 0 ; i < productStorage.length ; i += 1) {
-    
-    document.getElementById('cart__items').insertAdjacentHTML('beforeend', 
-      `<article class="cart__item" data-id="${productStorage[i]._id}" data-color="${productStorage[i].color}">
-                    <div class="cart__item__img">
-                      <img src="${productStorage[i].imageUrl}" alt="${productStorage[i].altTxt}">
-                    </div>
-                    <div class="cart__item__content">
-    
-                      <div class="cart__item__content__description">
-                        <h2>${productStorage[i].name}</h2>
-                        <p>${productStorage[i].color}</p>
-                      <p>${productStorage[i].price}</p>
-                      </div>
-                      <div class="cart__item__content__settings">
-                        <div class="cart__item__content__settings__quantity">
-                          <p>Qté : </p>
-                          <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${productStorage[i].qty}">
-                        </div>
-                        <div class="cart__item__content__settings__delete">
-                          <p class="deleteItem">Supprimer</p>
-                        </div>
-                      </div>
-                    </div>
-                  </article>`
     )
-    
-    
-    }}
-     console.log(productStorage); 
-    
-     console.log("trululuuuu");
-    
-    }
-    getCart();
-    
-    //console.log(productStorage); 
-    
-    ////////////////////////////////////////////////////////////////////////////
-    // calcul total quantité et prix
+    .catch(error => alert("Erreur : " + error));
 
-function getTotal() {
+}
 
-    const elementQty = document.getElementById('itemQuantity');
-    const lengthCart = elementQty.length,
-    totalQty = 0;
-    
-    for (var i=0; i < lengthCart; ++i) {
-     totalQty += elementQty[i].valueAsNumber;
-    }
-    
-    let productTotalQuantity = document.getElementById('totalQuantity');
-    productTotalQuantity.innerHTML = totalQty;
-    
-    
-    totalPrice = 0;
-    
-    for (const i = 0; i < lengthCart; ++i) {
-      totalPrice += (elementQty[i].valueAsNumber * productStorage[i].price);
-    }
-    
-    let productTotalPrice = document.getElementById('totalPrice');
-    productTotalPrice.innerHTML = totalPrice;
-    
-    console.log("trululuu");
-    }
-    getTotal();
+getCart();
 
-    /////////////////////////////////////////////////
+console.log("pouet");
+
+
+// etape 9
+// modifier la quantité
+// supprimer
+// addevenlistenr changement qte
+// element.closest cible pour supprimer
+
+// changement quantité
+
+
+console.log("trululuuu"); */
+    
+
 
     
-// calcul total quantité et prix
+ /*
+ //boutton supprimer et modifier
+const buttonDelete = document.querySelectorAll(".deleteItem")
+console.log(buttonDelete);
 
-async function displayNumberTotal() {
+const buttonChange = document.querySelectorAll(".itemQuantity");
+console.log(buttonChange);
 
-    let productStorage = await getCart();
-    let totalQuantity = 0;
-  
-    //  article dans panier  quantitées additionner dansvariable
-    for (let product of productStorage) {
-      totalQuantity += parseInt(product.quantity);
-    }
-  
-    // on retourne la variable contenant le total des quantitées dans le DOM
-    return document.getElementById("totalQuantity").textContent = totalQuantity;
+
+
+// supprimer le panier
+
+function deleteItem () {
+
+  for (let i = 0; i < buttonDelete.length; i++){
+
+buttonDelete[i].addEventListener("click", (e) => {
+console.log("opaf");
+
+  if (confirm ("Voulez vous supprimer cet article du panier ? ") == true) {
+
+    let itemRemove = productStorage[i].id
+
+    console.log(itemRemove);
+
+    newProductStorage = productStorage.filter(e => e.id !== itemRemove)
+
+    localStorage.setItem("panier", JSON.stringify(newProductStorage))
+
+    window.location.reload();
   }
-  
-  // on appelle la fonction pour afficher son résultat
-  displayNumberTotal()
-  
-  ////////////////////////////////////////////////////
-  // prix total
+})
+}
+}
+deleteItem();
 
-const displayTotalPrice = async () => {
-    if (productStorage) {
-      await getCart();
-      
-      // Calcul du prix total
-      let totalPrice = 0;
-  
-      productStorage.forEach((productInCart) => {
-        console.log(productInCart);
-        totalPrice +=
-          parseInt(productInCart.quantity) *
-          PriceMath(productInCart._id, parseInt(productInCart.quantity));
-      });
-      //Insertion du HTML du prix total après que l'on ait affiché les produits du panier
-      document.getElementById("cartAndFormContainer").insertAdjacentHTML(
-        "afterend",
-        `<div class="cart__price">
-        <p>
-          Total (<span id="totalQuantity">${product.length}</span> articles) :
-          <span id="totalPrice">${totalPrice}</span> €
-        </p>
-        </div>`
-      );
-    }
-  };
-  displayTotalPrice();
-  
+
+//changement quantité
+
+function change () {
+
+  for (let i = 0; i < buttonChange.length; i++){
+
+buttonChange.addEventListener('click', (e) => {
+
+  let modificationValue = buttonChange[i].value
+console.log("pouet");
+console.log(modificationValue);
+console.log(buttonChange);
+
+  //si modif superieur a 0 ou inf a 100
+  if (modificationValue > 0 && modificationValue <= 100) {
+    panier[i]. quantity = modificationValue;
+
+    productStorage.setItem("panier", JSON.stringify(productStorage))
+  }
+
+//si sup a 100 
+else if (modificationValue >100) {
+  alert("La quantité est trop élevé")
+}
+
+// si 0
+else (modificationValue <0 ) 
+{
+  if (confirm("Voulez vous supprimer cet article du panier ?") == true) {
+
+    // modification du local storage
+    let itemRemove = productStorage[i].id
+
+    newProductStorage = productStorage.filter(e => e.id !== itemRemove)
+
+    localStorage.setItem("panier", JSON.stringify(newProductStorage))
+  }
+}
+
+})
+
+  }
+}
+change();
+
+
+
+
+
+console.log("trululuuu");
+*/
