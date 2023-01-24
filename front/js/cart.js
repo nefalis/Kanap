@@ -26,8 +26,20 @@ function getCart() {
         // console.log(prod);
         //console.log(product);
 
-        document.getElementById('cart__items').insertAdjacentHTML('beforeend',
-          `<article class="cart__item" data-id="${product._id}" data-color="${product.colors}">
+        createItem(product, prod)
+        deleteItem()
+        quantityChange()
+
+      }
+      )
+      .catch(error => alert("Erreur : " + error));
+  }
+}
+getCart()
+
+function createItem(product, prod) {
+  document.getElementById('cart__items').insertAdjacentHTML('beforeend',
+    `<article class="cart__item" data-id="${product._id}" data-color="${product.colors}">
             <div class="cart__item__img">
               <img src="${product.imageUrl}" alt="${product.altTxt}">
             </div>
@@ -49,14 +61,8 @@ function getCart() {
               </div>
             </div>
           </article>`
-        )
-      }
-      )
-      .catch(error => alert("Erreur : " + error));
-  }
+  )
 }
-
-getCart()
 
 
 // total articles
@@ -107,124 +113,155 @@ displayTotalPrice();
 
 // supprimer le panier
 
-const buttonDelete = document.querySelectorAll(".deleteItem")
-console.log(buttonDelete);  
 
-for (let element of buttonDelete) {
+function deleteItem() {
 
- console.log("tadam");
+  const buttonDelete = document.querySelectorAll(".deleteItem")
+  //console.log(buttonDelete);  
 
- element.addEventListener("click", (e) => {
+  for (let element of buttonDelete) {
 
-  //parent proche avec closes
-  let closest = element.closest(".cart__item");
+    console.log("tadam");
 
-// selection du produit par couleur et id
-let closestColor = closest.getAttribute("data-color")
-let closestId = closest.getAttribute("data-id")
+    element.addEventListener("click", (e) => {
 
-// on retire les element avec splice
-for (let product of productStorage) {
+      console.log("pouet");
 
-  if (product.color === closestColor && product.id === closestId) {
+      //parent proche avec closest
+      let closest = element.closest(".cart__item");
 
-    // 1 pour supprimer que 1 element
-    productStorage.splice(panier.indexOf(product), 1);
-    
+      // selection du produit par couleur et id
+      let closestColor = closest.getAttribute("data-color")
+      let closestId = closest.getAttribute("data-id")
+
+      console.log(closestColor);
+      console.log(closestId);
+
+      // on retire les element avec splice
+      for (let product of productStorage) {
+
+        if (product.color === closestColor && product.id === closestId) {
+
+          // 1 pour supprimer que 1 element
+          // indexof element qu'on cherche
+          productStorage.splice(productStorage.indexOf(product), 1);
+
+        }
+      }
+      // modif les nouvelle valeur
+      localStorage.setItem("panier", JSON.stringify(productStorage))
+    })
   }
 }
-// modif les nouvelle valeur
-localStorage.setItem("panier", JSON.stringify(productStorage))
- })
+deleteItem();
 
 
-}
- 
- // changement quantité
- 
- const buttonChange = document.querySelectorAll(".itemQuantity")
+// changement quantité
 
- for (let element of buttonChange) {
-  element.addEventListener("change", () => {
-    let closest = element.closest(".cart__item");
+function quantityChange() {
 
-    let closestColor = closest.getAttribute("data-color")
-let closestId = closest.getAttribute("data-id")
+  const buttonChange = document.querySelectorAll(".itemQuantity")
 
-for (let product of productStorage) {
-  if (product.color === closestColor && product.id === closestId){
-    product.quantity = element.value
-  }
-}
+  for (let element of buttonChange) {
+    element.addEventListener("change", () => {
 
-localStorage.setItem("panier", JSON.stringify(productStorage))
+      console.log("ting");
 
-  })
- }
+      let closest = element.closest(".cart__item");
 
+      let closestColor = closest.getAttribute("data-color")
+      let closestId = closest.getAttribute("data-id")
 
+      for (let product of productStorage) {
 
-/*
-//changement quantité
+        if (product.color === closestColor && product.id === closestId) {
+          product.quantity = parseInt(element.value)
+        }
 
-/*const buttonChange = document.querySelectorAll(".itemQuantity");
-console.log(buttonChange);
+      }
 
+      localStorage.setItem("panier", JSON.stringify(productStorage))
 
-function change () {
-
-console.log("diung");
-
-  for (let i = 0; i < buttonChange.length; i++){
-
-buttonChange.addEventListener('click', (e) => {
-
-console.log("pouet");
-
-  let modificationValue = buttonChange[i].value
-
-console.log(modificationValue);
-console.log(buttonChange);
-
-  //si modif superieur a 0 ou inf a 100
-  if (modificationValue > 0 && modificationValue <= 100) {
-    panier[i]. quantity = modificationValue;
-
-    productStorage.setItem("panier", JSON.stringify(productStorage))
-  }
-
-//si sup a 100 
-else if (modificationValue >100) {
-  alert("La quantité est trop élevé")
-}
-
-// si 0
-else (modificationValue <0 ) 
-{
-  if (confirm("Voulez vous supprimer cet article du panier ?") == true) {
-
-    // modification du local storage
-    let itemRemove = productStorage[i].id
-
-    newProductStorage = productStorage.filter(e => e.id !== itemRemove)
-
-    localStorage.setItem("panier", JSON.stringify(newProductStorage))
+    })
   }
 }
 
-})
+quantityChange();
 
-  }
-}
-change();*/
+////// etape 10
+// valider la commande
+// récupérer les données
+// analyser les données saisies
+// afficher message d'erreur
+// test pour verif fonctionnement regex
 
-console.log("trululuuu"); 
+// je veux verifier les données saisie
+// si pas bonne saisie message erreur
 
-/*const buttonChange = document.querySelector(".itemQuantity");
-console.log(buttonChange);
+// bouton commande
+// click recupere donnée
+
+////////////////////////////
 
 
-buttonChange.addEventListener('change', function()  {
-  alert("pouet");
-})*/
 
+/////////////////// prénom et nom
+
+const nameRegex = //formulaire regex
+  /^[a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+([-'\s][a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+)?$/;
+
+//element du DOM
+let firstNameForm = document.getElementById("firstName");
+let lastNameForm = document.getElementById("lastName");
+
+// prenom
+firstNameForm.addEventListener("change", (e) => {
+  textInput(nameRegex, firstNameForm.value, "firstNameErrorMsg");
+});
+
+console.log(firstNameForm);
+
+// nom
+lastNameForm.addEventListener("change", (e) => {
+  textInput(nameRegex, lastNameForm.value, "lastNameErrorMsg");
+});
+
+console.log(lastNameForm);
+
+/////////////// adresse
+
+const addressRegex =
+  /^[a-zA-Z0-9àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ\s\,\'\-]*$/;
+
+let addressForm = document.getElementById("address");
+
+addressForm.addEventListener("change", (e) => {
+  textInput(addressRegex, addressForm.value, "addressErrorMsg");
+});
+
+console.log(addressForm);
+
+////////////////////// ville
+
+const cityRegex =
+  /^([0-9]{5}).[a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+([-'\s][a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+)?$/;
+
+let cityForm = document.getElementById("city");
+
+cityForm.addEventListener("change", (e) => {
+  textInput(cityRegex, cityForm.value, "cityErrorMsg");
+});
+
+console.log(cityForm);
+
+//////////////////// email
+
+const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+
+let emailForm = document.getElementById("email");
+
+emailForm.addEventListener("change", (e) => {
+  textInput(emailRegex, emailForm.value, "emailErrorMsg");
+});
+
+console.log(emailForm);
