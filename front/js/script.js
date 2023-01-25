@@ -1,7 +1,3 @@
-// recupérer sur Api
-// mettre en forme
-// injecter
-
 
 const start = () => {
 
@@ -27,8 +23,7 @@ const start = () => {
             console.log(display)
             document.querySelector('#items').insertAdjacentHTML('beforeend', display) //beforeend permet depositionner a la fin
         })
-        // insertadjacenthtml remplace innerhtml
-
+     
         .catch(err => console.log(err)) //quand se passe mal
 
 }

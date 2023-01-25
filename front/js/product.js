@@ -1,4 +1,4 @@
-// mettre condition couleur
+
 // message erreur quantité
 // limite 100qte
 
@@ -26,9 +26,11 @@ fetch('http://localhost:3000/api/products/' + idProduct)
 
     for (let colors of product.colors) {
       let productColors = document.createElement("option");
-      document.getElementById("colors").appendChild(productColors);
       productColors.value = colors;
       productColors.innerHTML = colors;
+
+      document.getElementById("colors").appendChild(productColors);
+
     }
   }
   )
@@ -44,8 +46,7 @@ const buttonProduct = document.getElementById("addToCart");
 
 buttonProduct.addEventListener('click', (e) => {
 
-  if (quantity.value > 0 && quantity.value <= 100 && quantity.value != 0) {
-
+  if (quantity.value > 0 && quantity.value <= 100) {
 
     // valeur Couleur - quantité
     let colorChoose = color.value;
@@ -54,28 +55,34 @@ buttonProduct.addEventListener('click', (e) => {
     // ajout localstorage ou tableau vide
     let cart = JSON.parse(localStorage.getItem("panier")) || [];
 
-    // si panier comporte un article
+    // panier comporte un article
     let resultFind = cart.find(
       el => el.idProduct === idProduct && el.colorProduct === colorChoose);
 
+  //else {
+     // alert("Veuillez selectionnez une quantité valide ")
+    //}
+
     //console.log(resultFind);
 
-    // si produit deja dans panier
+    // produit deja dans panier
     if (resultFind) {
       let newQuantity = parseInt(quantityChoose) + parseInt(resultFind.quantityProduct);
       resultFind.quantityProduct = newQuantity;
     }
 
-    // si produit pas dans le panier init en tableau
+    // produit pas dans le panier init en tableau
     else {
       const product = {
         idProduct: idProduct,
         colorProduct: colorChoose,
         quantityProduct: Number(quantityChoose),
       };
-
       cart.push(product);
     }
+
+ 
+
 
     localStorage.setItem("panier", JSON.stringify(cart));
 
