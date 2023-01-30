@@ -23,6 +23,10 @@ lastNameError : message erreur nom
 adressError : message erreur adresse
 cityError : message erreur ville
 emailError : message erreur email
+
+orderButton : bouton commander
+arrayProduct : tableau de produit pour envoi
+
 */
 
 
@@ -37,5 +41,7 @@ displayTotalPrice : gestion prix total
 validName : verif regex prenom nom
 validAdress : verif regex adresse
 validCity : verif regex ville
+
+getInformationOrder : recupère les information du formulaire
 
 */

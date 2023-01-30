@@ -984,3 +984,117 @@ change();*/
 console.log("trululuuu"); 
 
 
+// bouton commander
+const orderButton = document.getElementById("order")
+
+//création tableau de produit
+//let arrayProduct = [];
+
+// récupère les données du formulaire
+
+
+//console.log(getInformationOrder);
+
+// evenement au click bouton commander
+orderButton.addEventListener("click", (e) => {
+
+  if (productStorage === null || productStorage.length === 0) { // regarde si panier vide
+    alert("Votre panier est vide !");
+
+  }
+
+  else {
+    // vérification que le formulaire est correctement renseigné
+    if (firstNameForm.value == "" || lastNameForm.value == "" || addressForm.value == "" || cityForm.value == "" || emailForm.value == "") {
+      alert("Veuillez remplir tous les champs du formulaire");
+    }
+
+    else if (firstNameForm.value !== "" || lastNameForm.value !== "" || addressForm.value !== "" || cityForm.value !== "" || emailForm.value !== "") {
+      alert(" Veuillez vérifier les erreus dans le formulaire");
+    }
+
+
+    const getInformationOrder = {
+      contact: {
+        firstName: firstNameForm.value,
+        lastName: lastNameForm.value,
+        adress: addressForm.value,
+        city: cityForm.value,
+        email: emailForm.value,
+      }
+      // products: arrayProduct,
+    }
+
+    const methodPost = {
+      method: "POST",
+      header: {
+        Accept: 'application/json',
+        "Content-Type": 'application/json',
+      },
+      body: JSON.stringify(getInformationOrder),
+    }
+    
+
+  confirm("Voulez vous valider votre commande ? ")
+
+  console.log("uuuuuuuuuuuhhhhhhhh");
+
+  fetch("http://localhost:3000/api/products/order", methodPost) {
+      .then(res => res.json())
+      .then((e) => {
+        window.location.href = `confirmation.html?id=${result.orderId}`; //redirection vers page confirmation
+      })
+  }
+
+}// fin else
+
+
+}) // fin bouton
+
+///////////////////////////////////////////
+/*// bouton commander
+const orderButton = document.getElementById("order")
+
+//création tableau de produit
+//let arrayProduct = [];
+
+// récupère les données du formulaire
+function getInformationOrder() {
+  contact = {
+    firstName: firstNameForm.value,
+    lastName: lastNameForm.value,
+    adress: addressForm.value,
+    city: cityForm.value,
+    email: emailForm.value,
+  }
+ // products: arrayProduct,
+}
+
+getInformationOrder();
+
+console.log(getInformationOrder);
+
+// evenement au click bouton commander
+orderButton.addEventListener("click", (e) => {
+confirm("Voulez vous valider votre commande ? ")
+
+  console.log("uuuuuuuuuuuhhhhhhhh");
+  fetch("http://localhost:3000/api/products/order",  {
+
+    method : "POST",
+    header : {
+      Accept: 'application/json',
+      "Content-Type": 'application/json',
+    },
+    body : JSON.stringify(getInformationOrder),
+    } 
+    )
+
+    .then(res => res.json())
+      .then((result) => {
+        window.location.href = `confirmation.html?id=${result.orderId}`; //redirection vers page confirmation
+      }) 
+  })
+
+
+//console.log(orderButton);*/

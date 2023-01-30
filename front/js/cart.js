@@ -37,9 +37,14 @@ function getCart() {
 }
 getCart()
 
+/**
+ * Fonction pour générer l'HTML d'un article
+ * @param {object} product 
+ * @param {object} prod 
+ */
 function createItem(product, prod) {
   document.getElementById('cart__items').insertAdjacentHTML('beforeend',
-    `<article class="cart__item" data-id="${product._id}" data-color="${product.colors}">
+    `<article class="cart__item" data-id="${product._id}" data-color="${prod.colorProduct}">
             <div class="cart__item__img">
               <img src="${product.imageUrl}" alt="${product.altTxt}">
             </div>
@@ -64,8 +69,6 @@ function createItem(product, prod) {
   )
 }
 
-
-
 // total articles
 
 function displayTotalQuantity() {
@@ -77,10 +80,8 @@ function displayTotalQuantity() {
 
   })
   totalQuantity.textContent = total
-
 }
 displayTotalQuantity();
-
 
 // total prix
 
@@ -104,7 +105,6 @@ function displayTotalPrice() {
 
 }
 displayTotalPrice();
-
 
 // supprimer le panier
 
@@ -131,11 +131,11 @@ function addListenerDeleteItem() {
       console.log(closestColor);
       //console.log(closestId);
 
-
+      confirm("Etes vous sur de vouloir supprimer ce produit ? ")
 
       // on retire les element avec splice
       for (let product of productStorage) {
-        confirm("Etes vous sur de vouloir supprimer ce produit ? ")
+
 
         if (product.colorProduct === closestColor && product.idProduct === closestId) {
 
@@ -155,7 +155,6 @@ function addListenerDeleteItem() {
 }
 addListenerDeleteItem();
 
-
 // changement quantité
 
 function addListenerQuantityChange() {
@@ -169,7 +168,7 @@ function addListenerQuantityChange() {
 
       let closest = element.closest(".cart__item");
 
-      let closestColor = closest.getAttribute("data-colors")
+      let closestColor = closest.getAttribute("data-color")
       let closestId = closest.getAttribute("data-id")
 
       for (let product of productStorage) {
@@ -177,18 +176,17 @@ function addListenerQuantityChange() {
         console.log("tralalala");
 
         if (product.colorProduct === closestColor && product.idProduct === closestId) {
+          console.log('dans le if')
+          // Vérification si nouvelle quantité inférieur ou égale à 100
+          if (parseInt(element.value) >= 100) {
+            alert("Quantité max limité à 100");
+            return false // Arrêt code mais pas de blocage
+          }
+
           product.quantityProduct = parseInt(element.value)
-          
         }
-
-       // else if (quantityProduct > 100) {
-         // alert("Quantité max limité à 100");
-       // }
-
       }
       localStorage.setItem("panier", JSON.stringify(productStorage))
-
-
 
     })
   }
@@ -196,22 +194,7 @@ function addListenerQuantityChange() {
 
 addListenerQuantityChange();
 
-
-////// etape 10
-// valider la commande
-// récupérer les données
-// analyser les données saisies
-// afficher message d'erreur
-// test pour verif fonctionnement regex
-
-// je veux verifier les données saisie
-// si pas bonne saisie message erreur
-
-// bouton commande
-// click recupere donnée
-
-////////////////////////////
-
+/////////////////////// formulaire
 
 // prenom
 
@@ -221,15 +204,13 @@ function validName(input) {
 }
 
 firstNameForm.addEventListener("change", (e) => {
-if (validName(firstNameForm.value) == false) {
-  firstNameError.innerText = "Veuillez entrer une adresse sans caractères spéciaux"
-}
-else {
-  firstNameError.textContent = "Prénom valide";
-}
+  if (validName(firstNameForm.value) == false) {
+    firstNameError.innerText = "Veuillez entrer une adresse sans caractères spéciaux"
+  }
+  else {
+    firstNameError.textContent = "Prénom valide";
+  }
 });
-
-////console.log(firstNameForm);
 
 // nom
 
@@ -248,12 +229,7 @@ lastNameForm.addEventListener("change", (e) => {
 
 });
 
-//console.log(lastNameForm);
-
-
-/////////////// adresse
-
-
+// adresse
 
 let addressForm = document.getElementById("address");
 function validAddress(input) {
@@ -261,7 +237,7 @@ function validAddress(input) {
 }
 
 addressForm.addEventListener("change", (e) => {
-  if (validAddress(addressForm.value) == false){
+  if (validAddress(addressForm.value) == false) {
     addressError.innerText = "Veuillez entrer une adresse sans caractères spéciaux"
   }
   else {
@@ -270,9 +246,7 @@ addressForm.addEventListener("change", (e) => {
 
 });
 
-//console.log(addressForm);
-
-////////////////////// ville
+// ville
 
 let cityForm = document.getElementById("city");
 function validCity(input) {
@@ -280,17 +254,15 @@ function validCity(input) {
 }
 
 cityForm.addEventListener("change", (e) => {
-if (validCity(cityForm.value) == false) {
-  cityError.innerText = "Veuillez entrer une adresse sans caractères spéciaux"
-}
-else {
-  cityError.textContent = "Ville valide"
-}
+  if (validCity(cityForm.value) == false) {
+    cityError.innerText = "Veuillez entrer une adresse sans caractères spéciaux"
+  }
+  else {
+    cityError.textContent = "Ville valide"
+  }
 });
 
-//console.log(cityForm);
-
-//////////////////// email
+// email
 
 let emailForm = document.getElementById("email");
 function validEmail(input) {
@@ -307,10 +279,7 @@ emailForm.addEventListener("change", (e) => {
 
 });
 
-//console.log(emailForm);
-
-
-//////// Messages d'erreur
+// Messages d'erreur
 
 const firstNameError = document.getElementById("firstNameErrorMsg");
 const lastNameError = document.getElementById("lastNameErrorMsg");
@@ -318,42 +287,58 @@ const addressError = document.getElementById("addressErrorMsg");
 const cityError = document.getElementById("cityErrorMsg");
 const emailError = document.getElementById("emailErrorMsg");
 
+////////////  commander
 
-//////////// bouton commander
 
-const orderButton = document.getElementById("order")
+const postUrl = 'http://localhost:3000/api/products/order';
 
-function getInformationOrder() { 
-  contact = {
-firstName: firstNameForm.value,
-lastName: lastNameForm,
-adress: addressForm,
-city: cityForm,
-email: emailForm,
+const orderBtn = document.getElementById("order");
+
+orderBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  if (firstNameForm.value == "" || lastNameForm.value == "" || addressForm.value == "" || cityForm.value == "" || emailForm.value == "") {
+    alert("Veuillez remplir tous les champs du formulaire");
   }
-}
 
-orderButton.addEventListener("click", (e) => {
-  console.log("uuuuuuuuuuuhhhhhhhh");
-  fetch ("http://localhost:3000/api/products/") 
-  
+  else if (confirm("Confirmez-vous votre commande ? ") == true) {
+
+    let arrayProduct = [];
+
+    let order = {
+      contact: {
+        firstName: firstNameForm.value,
+        lastName: lastNameForm.value,
+        address: addressForm.value,
+        city: cityForm.value,
+        email: emailForm.value
+      },
+      products: arrayProduct
+    };
+
+    const options = {
+      method: 'POST',
+      body: JSON.stringify(order),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    };
+
+    fetch(postUrl, options)
+      .then(res => res.json())
+      .then(datas => {
+        console.log(datas);
+
+        // SECURE ORDER ID, EXPORT TO URL
+        window.location.href = "confirmation.html?orderId=" + datas.orderId;
+
+      })
+      .catch(error => {
+        alert(error);
+      })
+  }
+  else {
+    return false;
+  }
 })
-
-
-//console.log(orderButton);
-
-
-// confirm("etes vous sûr de vouloir valider votre commande ? ")
-
-
-/*
-* Expects request to contain:
-* contact: {
-*   firstName: string,
-*   lastName: string,
-*   address: string,
-*   city: string,
-*   email: string
-* }
-* products: [string] <-- array of product _id
-*/
