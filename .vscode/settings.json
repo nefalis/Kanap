@@ -1,4 +1,5 @@
 {
     "vscode-pets.petColor": "red",
-    "vscode-pets.petType": "crab"
+    "vscode-pets.petType": "crab",
+    "liveServer.settings.port": 5501
 }

@@ -1,15 +1,14 @@
 
 const start = () => {
 
-    // recuperation des articles
+    // Récupération des articles
     fetch('http://localhost:3000/api/products')
-        .then(res => res.json()) //récuper resultat au format json
-        .then(data => { // quand se passe bien
+        .then(res => res.json())
+        .then(data => { 
 
-            let display = '' //stock resultat dans display pour alleger le code
-            for (let article of data) { //boucle car tableau (8articles)
+            let display = '' //Stock résultat dans display pour allèger le code
+            for (let article of data) { 
 
-                /* += concatenation à la volée 1 11 111 1111 ...*/
                 display += ` 
         <a href="./product.html?id=${article._id}">
             <article>
@@ -20,15 +19,9 @@ const start = () => {
         </a>
     `
             }
-            console.log(display)
-            document.querySelector('#items').insertAdjacentHTML('beforeend', display) //beforeend permet depositionner a la fin
+            document.querySelector('#items').insertAdjacentHTML('beforeend', display) //beforeend permet de positionner à la fin
         })
-     
-        .catch(err => console.log(err)) //quand se passe mal
-
+        .catch(err => console.log(err))
 }
 
-window.addEventListener('load', start) //attend que DOm fini pour lancer JS
-
-//$ permet d'interpreter sans $ c'est du texte
-// ` indique texte
+window.addEventListener('load', start) //Attend que DOM fini pour lancer 

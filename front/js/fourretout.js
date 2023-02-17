@@ -981,7 +981,7 @@ else (modificationValue <0 )
 }
 change();*/
 
-console.log("trululuuu"); 
+/*console.log("trululuuu"); 
 
 
 // bouton commander
@@ -1049,7 +1049,7 @@ orderButton.addEventListener("click", (e) => {
 }// fin else
 
 
-}) // fin bouton
+}) // fin bouton*/
 
 ///////////////////////////////////////////
 /*// bouton commander

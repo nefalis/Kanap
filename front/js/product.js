@@ -1,18 +1,13 @@
 
-// message erreur quantité
-// limite 100qte
-
-
-// récupération id
+// Récupération id produit
 const idProduct = new URL(window.location.href).searchParams.get("id");
-console.log(idProduct)
 
-// récupération produits DOM et inserer dans le HTML
+// Récupération des produits DOM et inserer dans le HTML
 fetch('http://localhost:3000/api/products/' + idProduct)
-  .then(res => res.json()) //récuper resultat au format json
-  .then(product => { // quand se passe bien
+  .then(res => res.json())
+  .then(product => { 
 
-    const descriptionProduct = document.getElementById("description"); //on recup element
+    const descriptionProduct = document.getElementById("description"); //on recupère l'element
     descriptionProduct.textContent = product.description; //on injecte dans html
 
     const titleProduct = document.getElementById("title");
@@ -30,48 +25,46 @@ fetch('http://localhost:3000/api/products/' + idProduct)
       productColors.innerHTML = colors;
 
       document.getElementById("colors").appendChild(productColors);
-
     }
   }
   )
+  .catch(err => console.log(err))
 
-  .catch(err => console.log(err)) //quand se passe mal
-
-//récupération couleur et quantité
+//Récupération couleur et quantité
 const color = document.getElementById("colors");
 const quantity = document.getElementById("quantity");
 
-//gestion du panier
+//Gestion du panier
 const buttonProduct = document.getElementById("addToCart");
 
 buttonProduct.addEventListener('click', (e) => {
+  if (quantity.value <= 0 || quantity.value > 100) {  // Vérification mauvaise quantité
+    alert("Veuillez indiquer une quantité entre 1 et 100")
+  }
+  else if (color.value == "") { // Vérification absence de couleur
+    alert("Veuillez choisir une couleur")
+  }
 
-  if (quantity.value > 0 && quantity.value <= 100) {
+  if (quantity.value > 0 && quantity.value <= 100 && color.value !== "") { // si quantité et couleur ok
 
     // valeur Couleur - quantité
     let colorChoose = color.value;
     let quantityChoose = quantity.value;
 
-    // ajout localstorage ou tableau vide
+    // Ajout localstorage ou tableau vide
     let cart = JSON.parse(localStorage.getItem("panier")) || [];
 
-    // panier comporte un article
+    // Vérification du contenu du panier 
     let resultFind = cart.find(
       el => el.idProduct === idProduct && el.colorProduct === colorChoose);
 
-  //else {
-     // alert("Veuillez selectionnez une quantité valide ")
-    //}
-
-    //console.log(resultFind);
-
-    // produit deja dans panier
+    // Si Produit deja dans panier
     if (resultFind) {
       let newQuantity = parseInt(quantityChoose) + parseInt(resultFind.quantityProduct);
       resultFind.quantityProduct = newQuantity;
     }
 
-    // produit pas dans le panier init en tableau
+    // Si produit pas dans le panier  -  init en tableau
     else {
       const product = {
         idProduct: idProduct,
@@ -81,14 +74,9 @@ buttonProduct.addEventListener('click', (e) => {
       cart.push(product);
     }
 
- 
-
-
+    alert("Le produit a été ajouté")
     localStorage.setItem("panier", JSON.stringify(cart));
-
   }
-
-
 }
 )
 

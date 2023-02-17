@@ -1,41 +1,39 @@
 
-// Récuperer le contenu du panier dans le localstorage
-const productStorage = JSON.parse(localStorage.getItem('panier'));
+// Récuperer le contenu du panier dans le localstorage ou tableau vide
+let productStorage = JSON.parse(localStorage.getItem('panier')) || [];
 
-//gestion panier
-function getCart() {
+// Fonction de démarrage et de mise en place
+const start = () => {
 
-  //gestion du panier vide 
-  if (productStorage == null || productStorage == 0) {
+  getCart()
+    .then(() => {
+      // Mise en place terminée ajout des listeners
+      addListenerDeleteItem()
+      addListenerQuantityChange()
+    })
+}
+
+/**
+ * gestion du panier
+ */
+const getCart = async () => {
+
+  if (productStorage == null || productStorage == 0) {  //gestion du panier vide 
     document.getElementById("cart__items").innerHTML += `Votre panier est vide`;
   }
 
-  // gestion panier plein
-  else {
+  else { // gestion panier plein
     document.getElementById("cart__items").innerHTML += `Votre panier`;
   }
 
-  // Boucle FOR OF pour les tableaux
-  // recupération info produit
-  for (const prod of productStorage) {
+  for (const prod of productStorage) {  // Récupération info produit dans l'API et le localstorage
 
-    fetch("http://localhost:3000/api/products/" + prod.idProduct)
-      .then(res => res.json())
-      .then(product => {
-
-        // console.log(prod);
-        //console.log(product);
-
-        createItem(product, prod)
-        addListenerDeleteItem()
-        addListenerQuantityChange()
-
-      }
-      )
-      .catch(error => alert("Erreur : " + error));
+    let res = await fetch("http://localhost:3000/api/products/" + prod.idProduct)
+    let product = await res.json()
+    createItem(product, prod)
   }
+  return true
 }
-getCart()
 
 /**
  * Fonction pour générer l'HTML d'un article
@@ -69,22 +67,24 @@ function createItem(product, prod) {
   )
 }
 
-// total articles
-
+/**
+ * calcul quantité total article
+ */
 function displayTotalQuantity() {
 
   const totalQuantity = document.getElementById("totalQuantity")
   let total = 0
+
   productStorage.forEach(prod => {
     total += prod.quantityProduct
-
   })
   totalQuantity.textContent = total
 }
 displayTotalQuantity();
 
-// total prix
-
+/**
+ * calcul quantité total prix
+ */
 function displayTotalPrice() {
   const totalPrice = document.getElementById("totalPrice")
   let total = 0
@@ -99,64 +99,53 @@ function displayTotalPrice() {
 
         total += totalUnitPrice
         totalPrice.textContent = total
-
       })
   })
-
 }
 displayTotalPrice();
 
-// supprimer le panier
-
+/**
+ * Supprimer un article du panier
+ */
 function addListenerDeleteItem() {
 
   const buttonDelete = document.querySelectorAll(".deleteItem")
-  //console.log(buttonDelete);  
 
   for (let element of buttonDelete) {
-
-    console.log("tadam");
-
     element.addEventListener("click", (e) => {
 
-      console.log("pouet");
-
-      //parent proche avec closest
       let closest = element.closest(".cart__item");
 
       // selection du produit par couleur et id
       let closestColor = closest.getAttribute("data-color")
       let closestId = closest.getAttribute("data-id")
 
-      console.log(closestColor);
-      //console.log(closestId);
+      // Récuperer le contenu du panier dans le localstorage ou tableau vide
+      productStorage = JSON.parse(localStorage.getItem('panier')) || [];
 
-      confirm("Etes vous sur de vouloir supprimer ce produit ? ")
-
-      // on retire les element avec splice
-      for (let product of productStorage) {
-
+      for (let product of productStorage) {     // on retire les element avec splice
 
         if (product.colorProduct === closestColor && product.idProduct === closestId) {
-
-          // 1 pour supprimer que 1 element
-
           productStorage.splice(element, 1);
+          closest.remove();
+
+          alert("Produit supprimé")
+
         }
       }
-
-      closest.remove();
-
-      // modif les nouvelle valeur
+      // Changement des valeurs dnas le local storage
       localStorage.setItem("panier", JSON.stringify(productStorage))
+
+      // Recalcul des totaux
+      displayTotalQuantity()
+      displayTotalPrice()
     })
   }
-
 }
-addListenerDeleteItem();
 
-// changement quantité
-
+/**
+ * Changement de quantité
+ */
 function addListenerQuantityChange() {
 
   const buttonChange = document.querySelectorAll(".itemQuantity")
@@ -164,40 +153,47 @@ function addListenerQuantityChange() {
   for (let element of buttonChange) {
     element.addEventListener("change", () => {
 
-      console.log("ting");
-
       let closest = element.closest(".cart__item");
-
       let closestColor = closest.getAttribute("data-color")
       let closestId = closest.getAttribute("data-id")
 
       for (let product of productStorage) {
 
-        console.log("tralalala");
-
         if (product.colorProduct === closestColor && product.idProduct === closestId) {
-          console.log('dans le if')
+
+          // Vérification si nouvelle quantité supérieur ou égale à 0 avec message de suppression ou de saisie de nouvelle quantité
+          if (parseInt(element.value) < 1) {
+
+            if (confirm("Voulez vous supprimer cet article ? ") == true) {
+              productStorage.splice(element, 1);
+              closest.remove();
+            }
+            else (alert("Quantité invalide. Veuillez resaisir la quantité"))
+            return false // Arrêt code mais pas de blocage
+          }
+
           // Vérification si nouvelle quantité inférieur ou égale à 100
           if (parseInt(element.value) >= 100) {
             alert("Quantité max limité à 100");
             return false // Arrêt code mais pas de blocage
           }
-
           product.quantityProduct = parseInt(element.value)
         }
       }
       localStorage.setItem("panier", JSON.stringify(productStorage))
 
+      // Recalcul des totaux
+      displayTotalQuantity()
+      displayTotalPrice()
     })
   }
 }
 
 addListenerQuantityChange();
 
-/////////////////////// formulaire
+// formulaire
 
 // prenom
-
 let firstNameForm = document.getElementById("firstName");  //element du DOM
 function validName(input) {
   return /^[a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+([-'\s][a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+)?$/.test(input)
@@ -205,7 +201,7 @@ function validName(input) {
 
 firstNameForm.addEventListener("change", (e) => {
   if (validName(firstNameForm.value) == false) {
-    firstNameError.innerText = "Veuillez entrer une adresse sans caractères spéciaux"
+    firstNameError.innerText = "Veuillez entrer un prénom sans caractères spéciaux"
   }
   else {
     firstNameError.textContent = "Prénom valide";
@@ -213,7 +209,6 @@ firstNameForm.addEventListener("change", (e) => {
 });
 
 // nom
-
 let lastNameForm = document.getElementById("lastName");
 function validName(input) {
   return /^[a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+([-'\s][a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+)?$/.test(input)
@@ -221,16 +216,14 @@ function validName(input) {
 
 lastNameForm.addEventListener("change", (e) => {
   if (validName(lastNameForm.value) == false) {
-    lastNameError.innerText = "Veuillez entrer une adresse sans caractères spéciaux"
+    lastNameError.innerText = "Veuillez entrer un nom sans caractères spéciaux"
   }
   else {
     lastNameError.textContent = "Nom valide";
   }
-
 });
 
 // adresse
-
 let addressForm = document.getElementById("address");
 function validAddress(input) {
   return /^[a-zA-Z0-9àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ\s\,\'\-]*$/.test(input)
@@ -243,11 +236,9 @@ addressForm.addEventListener("change", (e) => {
   else {
     addressError.textContent = "Adresse valide"
   }
-
 });
 
 // ville
-
 let cityForm = document.getElementById("city");
 function validCity(input) {
   return /^[a-zA-Z0-9àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ\s\,\'\-]*$/.test(input)
@@ -255,7 +246,7 @@ function validCity(input) {
 
 cityForm.addEventListener("change", (e) => {
   if (validCity(cityForm.value) == false) {
-    cityError.innerText = "Veuillez entrer une adresse sans caractères spéciaux"
+    cityError.innerText = "Veuillez entrer une ville sans caractères spéciaux"
   }
   else {
     cityError.textContent = "Ville valide"
@@ -263,7 +254,6 @@ cityForm.addEventListener("change", (e) => {
 });
 
 // email
-
 let emailForm = document.getElementById("email");
 function validEmail(input) {
   return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(input)
@@ -271,24 +261,22 @@ function validEmail(input) {
 
 emailForm.addEventListener("change", (e) => {
   if (validEmail(emailForm.value) == false) {
-    emailError.innerText = "format email : exemple@domaine.com"
+    emailError.innerText = "format email valide : exemple@domaine.com"
   }
   else {
     emailError.innerText = "Email valide"
   }
-
 });
 
 // Messages d'erreur
-
 const firstNameError = document.getElementById("firstNameErrorMsg");
 const lastNameError = document.getElementById("lastNameErrorMsg");
 const addressError = document.getElementById("addressErrorMsg");
 const cityError = document.getElementById("cityErrorMsg");
 const emailError = document.getElementById("emailErrorMsg");
 
-////////////  commander
 
+//  commander
 
 const postUrl = 'http://localhost:3000/api/products/order';
 
@@ -297,14 +285,16 @@ const orderBtn = document.getElementById("order");
 orderBtn.addEventListener("click", (e) => {
   e.preventDefault();
 
+  //Vérification si le formulaire est bien rempli
   if (firstNameForm.value == "" || lastNameForm.value == "" || addressForm.value == "" || cityForm.value == "" || emailForm.value == "") {
     alert("Veuillez remplir tous les champs du formulaire");
   }
 
   else if (confirm("Confirmez-vous votre commande ? ") == true) {
 
-    let arrayProduct = [];
+    let arrayProduct = []
 
+    // Récupération des données du formulaire
     let order = {
       contact: {
         firstName: firstNameForm.value,
@@ -316,6 +306,7 @@ orderBtn.addEventListener("click", (e) => {
       products: arrayProduct
     };
 
+    // Requete POST envoi du formulaire dans la page confirmation
     const options = {
       method: 'POST',
       body: JSON.stringify(order),
@@ -325,20 +316,21 @@ orderBtn.addEventListener("click", (e) => {
       }
     };
 
-    fetch(postUrl, options)
+    fetch(postUrl, options) // Appel de l'API
       .then(res => res.json())
       .then(datas => {
-        console.log(datas);
 
-        // SECURE ORDER ID, EXPORT TO URL
+        // Envoie des informations dans la page confirmation
         window.location.href = "confirmation.html?orderId=" + datas.orderId;
-
       })
       .catch(error => {
         alert(error);
       })
+
   }
   else {
     return false;
   }
 })
+
+window.addEventListener('load', start)
