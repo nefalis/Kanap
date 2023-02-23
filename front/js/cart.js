@@ -40,7 +40,7 @@ const getCart = async () => {
  * @param {object} product 
  * @param {object} prod 
  */
-function createItem(product, prod) {
+function createItem(product, prod) { // indique ce qui doit s'afficher sur la page
   document.getElementById('cart__items').insertAdjacentHTML('beforeend',
     `<article class="cart__item" data-id="${product._id}" data-color="${prod.colorProduct}">
             <div class="cart__item__img">
@@ -68,7 +68,7 @@ function createItem(product, prod) {
 }
 
 /**
- * calcul quantité total article
+ * calcul quantité total article 
  */
 function displayTotalQuantity() {
 
@@ -123,10 +123,10 @@ function addListenerDeleteItem() {
       // Récuperer le contenu du panier dans le localstorage ou tableau vide
       productStorage = JSON.parse(localStorage.getItem('panier')) || [];
 
-      for (let product of productStorage) {     // on retire les element avec splice
+      for (i = 0; i < productStorage.length; i++) {  // on retire les element avec splice
 
-        if (product.colorProduct === closestColor && product.idProduct === closestId) {
-          productStorage.splice(element, 1);
+        if (productStorage[i].colorProduct === closestColor && productStorage[i].idProduct === closestId) {
+          productStorage.splice(i, 1);
           closest.remove();
 
           alert("Produit supprimé")

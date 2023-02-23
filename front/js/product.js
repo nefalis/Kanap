@@ -1,5 +1,5 @@
 
-// Récupération id produit
+// Récupération id produit 
 const idProduct = new URL(window.location.href).searchParams.get("id");
 
 // Récupération des produits DOM et inserer dans le HTML
@@ -19,12 +19,12 @@ fetch('http://localhost:3000/api/products/' + idProduct)
     const imgProduct = document.querySelector(".item__img");
     imgProduct.innerHTML = `<img src="${product.imageUrl}"  alt="${product.altTxt}">`;
 
-    for (let colors of product.colors) {
+    for (let colors of product.colors) { //boucle pour récupérer et afficher les couleurs
       let productColors = document.createElement("option");
       productColors.value = colors;
       productColors.innerHTML = colors;
 
-      document.getElementById("colors").appendChild(productColors);
+      document.getElementById("colors").appendChild(productColors); //insertion des couleurs
     }
   }
   )
